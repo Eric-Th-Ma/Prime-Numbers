@@ -6,12 +6,14 @@
 #ifndef PRIMES_HPP_INCLUDED
 #define PRIMES_HPP_INCLUDED
 
-#endif  // PRIMES_HPP_INCLUDED
+#include <cstddef>
+#include <iostream>
+#include <utility>
 
 /**
  * Primes
  * 
- * A heap array of n primes
+ * A heap array of size primes
  */
 
 class Primes {
@@ -20,10 +22,11 @@ class Primes {
     
     public:
         Primes() = delete;
+        Primes(size_t size);
         Primes(const Primes& orig);
+        void swap(Primes& rhs);
         Primes& operator=(const Primes& rhs);
         ~Primes();
-        Primes(size_t size);
 
         size_t size() const;
 
@@ -33,6 +36,7 @@ class Primes {
         using iterator = Iterator;
         iterator begin() const;  // An iterator that refers to the first element
         iterator end() const;
+
     private:
         int* primesList_;
         size_t size_;
@@ -64,5 +68,9 @@ class Primes {
 
                 int* current_;
         };
-
 };
+
+// Provide a non-member version of swap to allow standard swap(x,y) usage.
+void swap(Primes& lhs, Primes& rhs);
+
+#endif  // PRIMES_HPP_INCLUDED
