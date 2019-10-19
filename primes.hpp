@@ -21,13 +21,16 @@ class Primes {
         class Iterator;
     
     public:
-        Primes() = delete;
+        // Constructs a Primes object with size primes
         Primes(size_t size);
+        // Default constructs an empty Primes object
+        Primes();
         Primes(const Primes& orig);
         void swap(Primes& rhs);
         Primes& operator=(const Primes& rhs);
         ~Primes();
 
+        // Quick access to the number of primes stored
         size_t size() const;
 
         bool operator==(const Primes& rhs) const;
@@ -35,11 +38,11 @@ class Primes {
 
         using iterator = Iterator;
         iterator begin() const;  // An iterator that refers to the first element
-        iterator end() const;
+        iterator end() const;  // An iterator one past the end 
 
     private:
-        int* primesList_;
         size_t size_;
+        int* primesList_;
         int* newPrimePtr_;
 
         class Iterator {
@@ -49,9 +52,9 @@ class Primes {
                 using value_type = int;
                 using reference = value_type&;
                 using pointer = value_type*;
-                using iterator_category = std::forward_iterator_tag;
+                using iterator_category = std::random_access_iterator_tag;
 
-                // Provide all the usual operations for a forward iterator
+                // All the usual operations for a forward iterator
 
                 Iterator() = default;
                 Iterator(const Iterator&) = default;
@@ -59,10 +62,14 @@ class Primes {
                 ~Iterator() = default;
 
                 Iterator& operator++();
-                int& operator*() const;
+                Iterator& operator--();
+                Iterator operator+(const int& rhs);
+                Iterator operator-(const int& rhs);
+                value_type& operator[](const int& rhs);
+                value_type& operator*() const;
                 bool operator==(const Iterator& rhs) const;
                 bool operator!=(const Iterator& rhs) const;
-                int* operator->() const;
+                value_type* operator->() const;
             private:
                 friend class Primes;
                 explicit Iterator(int* current);

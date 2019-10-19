@@ -13,29 +13,45 @@
 Primes::Primes(size_t size) : size_(0), primesList_(new int[size]), newPrimePtr_(new int) {
     if (size>0) {
         // The nth prime is approximately nxlog10(n)
-        // So it is very unlikely for it to be under nxlog2(n)
+        // So it is very unlikely (maybe even impossible
+        // for it to be under nx(log2(n) + 1)
         // Additionally log2 is much cheaper than log10
-        int testUnder = size*(std::log2(size)+1);
+        size_t testUnder = size*(std::log2(size)+1);
         std::list<int> testList;
-        // std::cout << testList.max_size() << std::endl;
+        /* Test code:
+            std::cout << "Under: " << testUnder << std::endl;
+            std::cout << testList.max_size() << std::endl;
+         */
+        // Make a list of the numbers to test
         for (size_t i = 3; i <= testUnder; i+=2) {
             testList.push_back(i);
         }
+        // Add two to primes
         primesList_[0] = 2;
         ++size_;
         while (size_<size) {
+            // Add the first test prime to primes and remove it from the test list
             *newPrimePtr_ = testList.front();
             testList.pop_front();
+            // Remove every multiple of this new prime from the test list
             testList.remove_if([this](int n){return n % *this->newPrimePtr_ == 0;});
             primesList_[size_] = *newPrimePtr_;
-            std::cout << *newPrimePtr_ << std::endl;
+            // std::cout << "p = " << *newPrimePtr_ << std::endl;
             ++size_;
         }
     }
 }
 
+Primes::Primes() : size_(0), primesList_(new int[0]), newPrimePtr_(new int) {
+    // Nothing else to do.
+    // Default Primes is empty
+}
+
 Primes::Primes(const Primes& orig) : size_(orig.size()), primesList_(new int[orig.size()]), newPrimePtr_(new int) {
-    // TODO: copy values from orig into new Primes
+    iterator origIt = orig.begin();
+    for (size_t i = 0; i < size_; ++i) {
+        primesList_[i] = origIt[i];
+    }
 }
 
 void Primes::swap(Primes& rhs) {
@@ -61,7 +77,7 @@ Primes& Primes::operator=(const Primes& rhs) {
 }
 
 Primes::~Primes() {
-    // deletes the array on the heap
+    // deletes the array on the heap and single int on the heap
     delete[] primesList_;
     delete newPrimePtr_;
 }
@@ -71,8 +87,17 @@ size_t Primes::size() const {
 }
 
 bool Primes::operator==(const Primes& rhs) const {
-    // TODO: check all values are equal
-    return true;
+    if (size_ != rhs.size()) {
+        return false;
+    } else {
+        iterator rhsIt = rhs.begin();
+        for (size_t i = 0; i < size_; ++i) {
+            if (primesList_[i] != rhsIt[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
 
 bool Primes::operator!=(const Primes& rhs) const {
@@ -96,9 +121,27 @@ Primes::Iterator::Iterator(int* current) : current_(current) {
 }
 
 Primes::Iterator& Primes::Iterator::operator++() {
-    // TODO:: increment
     ++current_;
     return (*this);
+}
+
+Primes::Iterator& Primes::Iterator::operator--() {
+    --current_;
+    return (*this);
+}
+
+Primes::Iterator Primes::Iterator::operator+(const int& rhs) {
+    int* ptr = current_ + rhs;
+    return Iterator{ptr};
+}
+
+Primes::Iterator Primes::Iterator::operator-(const int& rhs) {
+    int* ptr = current_ - rhs;
+    return Iterator{ptr};
+}
+
+int& Primes::Iterator::operator[](const int& rhs) {
+    return current_[rhs];
 }
 
 int& Primes::Iterator::operator*() const {
