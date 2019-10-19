@@ -17,6 +17,10 @@ int main() {
     std::cout << "Prime number: ";
     int primeNum;
     std::cin >> primeNum;
-    std::cout << "Is: " << it[primeNum] << std::endl;
+    std::cout << "Is: " << it[primeNum-1] << std::endl;
+    std::cout << "Check prime: ";
+    int checkPrimeNum;
+    std::cin >> checkPrimeNum;
+    std::cout << "Is: " << test.checkPrime(checkPrimeNum) << std::endl;
     return 0;
 }

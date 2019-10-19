@@ -33,6 +33,8 @@ class Primes {
         // Quick access to the number of primes stored
         size_t size() const;
 
+        int checkPrime(int testPrime) const;
+
         bool operator==(const Primes& rhs) const;
         bool operator!=(const Primes& rhs) const;
 

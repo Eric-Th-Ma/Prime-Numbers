@@ -55,25 +55,25 @@ Primes::Primes(const Primes& orig) : size_(orig.size()), primesList_(new int[ori
 }
 
 void Primes::swap(Primes& rhs) {
-  // This is the canonical way to swap arbitrary types; this incantation
-  // will call std::swap unless we're swapping a class that provides its
-  // own swap function (like we do), in which case that swap is called.
-  // Here we end up calling std::swap since the swapped parts are primitives.
+    // This is the canonical way to swap arbitrary types; this incantation
+    // will call std::swap unless we're swapping a class that provides its
+    // own swap function (like we do), in which case that swap is called.
+    // Here we end up calling std::swap since the swapped parts are primitives.
 
-  using std::swap;
+    using std::swap;
 
-  swap(primesList_, rhs.primesList_);
-  swap(size_, rhs.size_);
+    swap(primesList_, rhs.primesList_);
+    swap(size_, rhs.size_);
 }
 
 void swap(Primes& lhs, Primes& rhs) { lhs.swap(rhs); }
 
 Primes& Primes::operator=(const Primes& rhs) {
-  // Assignment is implemented idiomatically for C++, using "the swap trick"
-  Primes copy = rhs;
-  swap(copy);
+    // Assignment is implemented idiomatically for C++, using "the swap trick"
+    Primes copy = rhs;
+    swap(copy);
 
-  return *this;
+    return *this;
 }
 
 Primes::~Primes() {
@@ -84,6 +84,24 @@ Primes::~Primes() {
 
 size_t Primes::size() const {
     return size_;
+}
+
+int Primes::checkPrime(int testPrime) const {
+    int maxPrime = primesList_[size_-1];
+    if (testPrime > (maxPrime * maxPrime)) {
+        std::cout << "Testing too large. Up size of primes, or test smaller." << std::endl;
+        return 0;
+    } else {
+        for (size_t i = 0; i < size_; ++i) {
+            if (testPrime == primesList_[i]) {
+                return (i + 1);
+            } else if ((testPrime % primesList_[i]) == 0) {
+                return 0;
+            }
+        }
+        std::cout << "To large to know which one but yes it is a prime." << std::endl;
+        return (size_ + 1);
+    }
 }
 
 bool Primes::operator==(const Primes& rhs) const {
@@ -153,10 +171,10 @@ bool Primes::Iterator::operator==(const Iterator& rhs) const {
 }
 
 bool Primes::Iterator::operator!=(const Iterator& rhs) const {
-  // Idiomatic code: leverage == to implement !=
-  return !(*this == rhs);
+    // Idiomatic code: leverage == to implement !=
+    return !(*this == rhs);
 }
 
 int* Primes::Iterator::operator->() const {
-  return &(*current_);
+    return &(*current_);
 }
