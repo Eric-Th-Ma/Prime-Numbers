@@ -30,8 +30,8 @@ class Primes {
 
         size_t size() const;
 
-        bool operator==(const IntList& rhs) const;
-        bool operator!=(const IntList& rhs) const;
+        bool operator==(const Primes& rhs) const;
+        bool operator!=(const Primes& rhs) const;
 
         using iterator = Iterator;
         iterator begin() const;  // An iterator that refers to the first element
@@ -40,6 +40,7 @@ class Primes {
     private:
         int* primesList_;
         size_t size_;
+        int* newPrimePtr_;
 
         class Iterator {
             public:

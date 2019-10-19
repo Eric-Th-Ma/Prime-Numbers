@@ -4,11 +4,37 @@
  * \brief Implimentation of Primes
  */
 
-Primes::Primes(size_t size) : size_(size), primesList_(new int[size]) {
-    // TODO: make list of size primes
+#include <utility>
+#include "primes.hpp"
+#include <list>
+#include <iostream>
+#include <cmath>
+
+Primes::Primes(size_t size) : size_(0), primesList_(new int[size]), newPrimePtr_(new int) {
+    if (size>0) {
+        // The nth prime is approximately nxlog10(n)
+        // So it is very unlikely for it to be under nxlog2(n)
+        // Additionally log2 is much cheaper than log10
+        int testUnder = size*(std::log2(size)+1);
+        std::list<int> testList;
+        // std::cout << testList.max_size() << std::endl;
+        for (size_t i = 3; i <= testUnder; i+=2) {
+            testList.push_back(i);
+        }
+        primesList_[0] = 2;
+        ++size_;
+        while (size_<size) {
+            *newPrimePtr_ = testList.front();
+            testList.pop_front();
+            testList.remove_if([this](int n){return n % *this->newPrimePtr_ == 0;});
+            primesList_[size_] = *newPrimePtr_;
+            std::cout << *newPrimePtr_ << std::endl;
+            ++size_;
+        }
+    }
 }
 
-Primes::Primes(const Primes& orig) : size_(orig.size()), primesList_(new int[orig.size()]) {
+Primes::Primes(const Primes& orig) : size_(orig.size()), primesList_(new int[orig.size()]), newPrimePtr_(new int) {
     // TODO: copy values from orig into new Primes
 }
 
@@ -31,13 +57,13 @@ Primes& Primes::operator=(const Primes& rhs) {
   Primes copy = rhs;
   swap(copy);
 
-  affirm(consistent());
   return *this;
 }
 
 Primes::~Primes() {
     // deletes the array on the heap
-    delete primesList_;
+    delete[] primesList_;
+    delete newPrimePtr_;
 }
 
 size_t Primes::size() const {
@@ -50,7 +76,7 @@ bool Primes::operator==(const Primes& rhs) const {
 }
 
 bool Primes::operator!=(const Primes& rhs) const {
-    return !(this==rhs);
+    return !(*this==rhs);
 }
 
 Primes::iterator Primes::begin() const {
@@ -75,7 +101,7 @@ Primes::Iterator& Primes::Iterator::operator++() {
     return (*this);
 }
 
-int& Primes::Iterator::operator*() {
+int& Primes::Iterator::operator*() const {
     return (*current_);
 }
 
@@ -88,6 +114,6 @@ bool Primes::Iterator::operator!=(const Iterator& rhs) const {
   return !(*this == rhs);
 }
 
-int* IntList::Iterator::operator->() const {
+int* Primes::Iterator::operator->() const {
   return &(*current_);
 }
