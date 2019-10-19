@@ -1,1 +1,1 @@
-We'll see.
+Data structure primes generates and stores primes. Can check it's size, use it to test if another number is prime, and use it's random access iterator to find the nth prime.
