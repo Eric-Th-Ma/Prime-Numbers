@@ -67,11 +67,11 @@ class Primes {
                 Iterator& operator--();
                 Iterator operator+(const int& rhs);
                 Iterator operator-(const int& rhs);
-                value_type& operator[](const int& rhs);
-                value_type& operator*() const;
+                value_type operator[](const int& rhs);
+                value_type operator*() const;
                 bool operator==(const Iterator& rhs) const;
                 bool operator!=(const Iterator& rhs) const;
-                value_type* operator->() const;
+                // value_type* operator->() const;
             private:
                 friend class Primes;
                 explicit Iterator(int* current);

@@ -158,11 +158,11 @@ Primes::Iterator Primes::Iterator::operator-(const int& rhs) {
     return Iterator{ptr};
 }
 
-int& Primes::Iterator::operator[](const int& rhs) {
+int Primes::Iterator::operator[](const int& rhs) {
     return current_[rhs];
 }
 
-int& Primes::Iterator::operator*() const {
+int Primes::Iterator::operator*() const {
     return (*current_);
 }
 
@@ -174,7 +174,8 @@ bool Primes::Iterator::operator!=(const Iterator& rhs) const {
     // Idiomatic code: leverage == to implement !=
     return !(*this == rhs);
 }
-
-int* Primes::Iterator::operator->() const {
+/*
+ int* Primes::Iterator::operator->() const {
     return &(*current_);
-}
+ }
+ */
