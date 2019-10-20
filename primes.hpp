@@ -9,6 +9,7 @@
 #include <cstddef>
 #include <iostream>
 #include <utility>
+#include <list>
 
 /**
  * Primes
@@ -32,8 +33,10 @@ class Primes {
 
         // Quick access to the number of primes stored
         size_t size() const;
-
+        // Returns 0 if not a prime not 0 if it is a prime
         int checkPrime(int testPrime) const;
+
+        std::list<int> factorize(int n) const;
 
         bool operator==(const Primes& rhs) const;
         bool operator!=(const Primes& rhs) const;

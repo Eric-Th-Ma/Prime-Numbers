@@ -13,10 +13,10 @@
 Primes::Primes(size_t size) : size_(0), primesList_(new int[size]), newPrimePtr_(new int) {
     if (size>0) {
         // The nth prime is approximately nxlog10(n)
-        // So it is very unlikely (maybe even impossible
-        // for it to be under nx(log2(n) + 1)
+        // So it is very unlikely (maybe even impossible)
+        // for it to be under n*(log2(n) + 1)
         // Additionally log2 is much cheaper than log10
-        size_t testUnder = size*(std::log2(size)+1);
+        size_t testUnder = fmax(size*(std::log2(size)),3);
         std::list<int> testList;
         /* Test code:
             std::cout << "Under: " << testUnder << std::endl;
@@ -26,6 +26,7 @@ Primes::Primes(size_t size) : size_(0), primesList_(new int[size]), newPrimePtr_
         for (size_t i = 3; i <= testUnder; i+=2) {
             testList.push_back(i);
         }
+        int nextOption = testList.back()+2;
         // Add two to primes
         primesList_[0] = 2;
         ++size_;
@@ -38,6 +39,16 @@ Primes::Primes(size_t size) : size_(0), primesList_(new int[size]), newPrimePtr_
             primesList_[size_] = *newPrimePtr_;
             // std::cout << "p = " << *newPrimePtr_ << std::endl;
             ++size_;
+            if (testList.empty()) {
+                break;
+            }
+        }
+        while (size_<size) {
+            if (this->checkPrime(nextOption)) {
+                primesList_[size_]=nextOption;
+                ++size_;
+            }
+            nextOption += 2;
         }
     }
 }
@@ -88,9 +99,11 @@ size_t Primes::size() const {
 
 int Primes::checkPrime(int testPrime) const {
     int maxPrime = primesList_[size_-1];
-    if (testPrime > (maxPrime * maxPrime)) {
+    if (testPrime > (maxPrime * maxPrime) && maxPrime < 46340) {
         std::cout << "Testing too large. Up size of primes, or test smaller." << std::endl;
-        return 0;
+        std::cout << "You can test up to: " << (maxPrime * maxPrime) << std::endl;
+        // std::cout << maxPrime << std::endl;
+        return 1;
     } else {
         for (size_t i = 0; i < size_; ++i) {
             if (testPrime == primesList_[i]) {
@@ -99,9 +112,27 @@ int Primes::checkPrime(int testPrime) const {
                 return 0;
             }
         }
-        std::cout << "To large to know which one but yes it is a prime." << std::endl;
+        //std::cout << "To large to know which one but yes it is a prime." << std::endl;
         return (size_ + 1);
     }
+}
+
+std::list<int> Primes::factorize(int n) const {
+    std::list<int> factors;
+    for (int* i = primesList_; i != (primesList_+size_); ++i) {
+        if ((n % *i) == 0) {
+            factors.push_back(*i);
+            n = n / *i;
+            --i;
+            if (n == 1) {
+                break;
+            }
+        }
+    }
+    if (n != 1) {
+        factors.push_back(n);
+    }
+    return factors;
 }
 
 bool Primes::operator==(const Primes& rhs) const {
